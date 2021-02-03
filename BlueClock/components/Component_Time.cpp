@@ -33,7 +33,7 @@ void CComponent_Time::Update()
     return;
 #endif
 
-    const int ProgresssBarHeight = 12;
+    const int ProgresssBarHeight = 14;
 
     SYSTEMTIME st = { 0 };
     GetLocalTime(&st);
@@ -44,8 +44,8 @@ void CComponent_Time::Update()
     int minute = st.wMinute;
 #else
     int day_of_week = 4;
-    int hour = 15;
-    int minute = 0;
+    int hour = 6;
+    int minute = 15;
 #endif
 
     CRect view_rc = GetViewRect();
@@ -58,13 +58,13 @@ void CComponent_Time::Update()
 
     // Ω√∞£
 
-    GetCanvasPtr()->SetFont(_T("πŸ≈¡√º"), 24);
+    GetCanvasPtr()->SetFont(_T("∏º¿∫ ∞ÌµÒ"), 24);
     blue::mfc::CCanvas::CDrawStringParams ds_params;
     ds_params.mForeColor = GetTextColor();
     ds_params.mFormat = DT_CENTER | DT_VCENTER | DT_SINGLELINE;
     ds_params.mY = GetMargin();
     ds_params.mHeight = GetHeight(true) / 2;
-#if 0
+#if 1
     GetCanvasPtr()->DrawStringParams(ds_params, _T("%02d:%02d:%02d"), hour, minute, st.wSecond);
 #else
     GetCanvasPtr()->DrawStringParams(ds_params, _T("%02d:%02d:%02d.%03d"),
@@ -81,25 +81,37 @@ void CComponent_Time::Update()
     rc.OffsetRect(0, view_rc2.Height() - ProgresssBarHeight);
     GetCanvasPtr()->FillRect(&rc, GetBkgndColor2());
 
+#if 0
     rc.left     = GetMargin() + (int)(hour * view_rc2.Width() / 24.0 + 0.5);
     rc.right    = rc.left + (int)(minute * (view_rc2.Width() / 24.0) / 60.0 + 0.5);
-    GetCanvasPtr()->FillRect(&rc, GetBkgndColor3());
-
-#if 0
-    int hours[] =
-    {
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-        13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
-    };
 #else
-    int hours[] = { 0, 2, 6, 9, 12, 18, 21 };
+    rc.left     = GetMargin();
+    rc.right    = rc.left + (int)(hour * view_rc2.Width() / 24.0 + 0.5) +
+                    (int)((minute+1) * (view_rc2.Width() / 24.0 + 0.5) / 60.0 + 0.5);
 #endif
+    //GetCanvasPtr()->FillRect(&rc, GetBkgndColor3());
+    rc.top += 4;
+    GetCanvasPtr()->FillRect(&rc, GetTextColor2());
+
+    rc.top -= 4;
+    int hours[] = { 0, 2, 6, 9, 12, 18, 21 };
     GetCanvasPtr()->SetFont(_T("πŸ≈¡√º"), 8);
-    for (auto& i : hours)
+    for (int i = 0; i < 24; i++)
     {
         rc.left     = GetMargin() + (int)(i * view_rc2.Width() / 24.0 + 0.5);
         rc.right    = rc.left + 1;
+        rc.bottom   = rc.top + 2;
+        
+        for (int j = 0; j < sizeof(hours) / sizeof(int); j++)
+        {
+            int v = hours[j];
+            if (i == v)
+            {
+                GetCanvasPtr()->DrawString(rc.left, rc.top - ProgresssBarHeight, GetTextColor2(), _T("%02d"), i);
+                rc.bottom = rc.top + ProgresssBarHeight;
+            }
+        }
+
         GetCanvasPtr()->FillRect(&rc, GetTextColor2());
-        GetCanvasPtr()->DrawString(rc.left, rc.top - ProgresssBarHeight, GetTextColor2(), _T("%02d"), i);
     }
 }
