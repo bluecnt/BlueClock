@@ -82,6 +82,7 @@
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)tmp\</IntDir>
     <TargetName>$(ProjectName)_x64_d</TargetName>
+    <IncludePath>$(ProjectDir);$(SolutionDir)modules;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -91,6 +92,7 @@
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)tmp\</IntDir>
     <TargetName>$(ProjectName)_x64</TargetName>
+    <IncludePath>$(ProjectDir);$(SolutionDir)modules;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -189,16 +191,30 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\modules\blue\inc\mfc\BlueCanvas.h" />
+    <ClInclude Include="..\modules\blue\inc\mfc\BlueWndUtils.h" />
     <ClInclude Include="BlueClock.h" />
     <ClInclude Include="BlueClockDlg.h" />
+    <ClInclude Include="components\Component.h" />
+    <ClInclude Include="components\ComponentManager.h" />
+    <ClInclude Include="components\Component_Date.h" />
+    <ClInclude Include="components\Component_Time.h" />
+    <ClInclude Include="components\Component_Title.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\modules\blue\src\mfc\BlueCanvas.cpp" />
+    <ClCompile Include="..\modules\blue\src\mfc\BlueWndUtils.cpp" />
     <ClCompile Include="BlueClock.cpp" />
     <ClCompile Include="BlueClockDlg.cpp" />
+    <ClCompile Include="components\Component.cpp" />
+    <ClCompile Include="components\ComponentManager.cpp" />
+    <ClCompile Include="components\Component_Date.cpp" />
+    <ClCompile Include="components\Component_Time.cpp" />
+    <ClCompile Include="components\Component_Title.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

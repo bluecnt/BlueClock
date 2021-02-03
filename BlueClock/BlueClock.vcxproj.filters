@@ -13,6 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="modules">
+      <UniqueIdentifier>{8590e8ce-93b0-4b3b-af50-526fea767499}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules\blue">
+      <UniqueIdentifier>{0530ba23-d264-4c6c-acc7-e44bf0b46261}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules\blue\inc">
+      <UniqueIdentifier>{6f27cca6-707e-404d-b3f4-31c20cd32215}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules\blue\inc\mfc">
+      <UniqueIdentifier>{c01bb362-d1c9-45bf-9dc4-91a08a056080}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules\blue\src">
+      <UniqueIdentifier>{37424f5a-49d9-4725-a669-c65dc9086473}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules\blue\src\mfc">
+      <UniqueIdentifier>{773e3766-0bc3-4e21-93d8-979dc141e812}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="components">
+      <UniqueIdentifier>{574877ce-3a3d-4dcf-89bb-0c45971a0f04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlueClock.h">
@@ -33,6 +54,27 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\modules\blue\inc\mfc\BlueWndUtils.h">
+      <Filter>modules\blue\inc\mfc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\modules\blue\inc\mfc\BlueCanvas.h">
+      <Filter>modules\blue\inc\mfc</Filter>
+    </ClInclude>
+    <ClInclude Include="components\Component.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\Component_Date.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\ComponentManager.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\Component_Time.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\Component_Title.h">
+      <Filter>components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlueClock.cpp">
@@ -43,6 +85,27 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\blue\src\mfc\BlueWndUtils.cpp">
+      <Filter>modules\blue\src\mfc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\blue\src\mfc\BlueCanvas.cpp">
+      <Filter>modules\blue\src\mfc</Filter>
+    </ClCompile>
+    <ClCompile Include="components\Component.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="components\Component_Date.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="components\ComponentManager.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="components\Component_Time.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="components\Component_Title.cpp">
+      <Filter>components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
