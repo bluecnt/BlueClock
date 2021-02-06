@@ -8,14 +8,14 @@
 #include "BlueClockDlg.h"
 #include "afxdialogex.h"
 
-#include "components/Component_Title.h"
-#include "components/Component_Date.h"
-#include "components/Component_Time.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+#if 0
+# include <mmsystem.h>
+# pragma comment(lib, "winmm.lib")
+#endif
 
 // CAboutDlg dialog used for App About
 
@@ -81,6 +81,50 @@ END_MESSAGE_MAP()
 
 // CBlueClockDlg message handlers
 
+
+int64_t bl_get_curr_usec(bool utc = false)
+{
+	int64_t usec = 0;
+
+#ifdef _WIN32
+
+	FILETIME ft = { 0 };
+	int64_t t = 0;
+
+	// 1601.01.01.MON 기준으로 100ns(1/10,000,000)
+	GetSystemTimeAsFileTime(&ft);
+
+	if (!utc)
+		FileTimeToLocalFileTime(&ft, &ft);
+
+#if 0
+	SYSTEMTIME st = { 0 };
+	FileTimeToSystemTime(&ft, &st);
+#endif
+
+	t = (int64_t)ft.dwHighDateTime << 32 | ft.dwLowDateTime;
+	// 1970.01.01.THU 기준으로 변환
+	usec = t / 10 - 11644473600000000; /* Jan 1, 1601 */
+
+#elif __linux__
+
+	timeval tv = { 0 };
+
+	gettimeofday(&tv, NULL);
+	usec = (int64_t)tv.tv_sec * MicroSecond + tv.tv_usec;
+
+	if (!utc)
+	{
+		tm* tm = localtime(&tv.tv_sec);
+		usec += tm->tm_gmtoff * MicroSecond;
+	}
+
+#endif
+
+	return usec;
+}
+
+
 BOOL CBlueClockDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -114,44 +158,7 @@ BOOL CBlueClockDlg::OnInitDialog()
 	SetWindowText(_T("BLUECNT BlueClock v0.1"));
 	ModifyStyleEx(WS_EX_APPWINDOW, WS_EX_TOOLWINDOW | WS_EX_TOPMOST);
 
-	CComponent::CInitParams init_params;
-
-	auto comp_title_sp	= make_shared<CComponent_Title>();
-	auto comp_date_sp	= make_shared<CComponent_Date>();
-	auto comp_time_sp	= make_shared<CComponent_Time>();
-
-#if 0
-	init_params.mName			= _T("BlueClock v0.1");
-	init_params.mHeight			= 60;
-	init_params.mBkgndColor		= RGB(0xeb, 0xf1, 0xdd);
-	init_params.mTextColor		= RGB(0x4f, 0x61, 0x28);
-	init_params.mBkgndColor2	= RGB(0xd7, 0xe3, 0xbc);
-	init_params.mBkgndColor3	= RGB(0xc3, 0xd6, 0x9b);
-	init_params.mTextColor2		= RGB(0x76, 0x92, 0x3c);
-	comp_title_sp->Init(init_params);
-	mComponentMngr.Add(comp_title_sp);
-#endif
-
-	init_params.mName			= _T("Date");
-	init_params.mHeight			= 80;
-	init_params.mBkgndColor		= RGB(0xdb, 0xee, 0xf3);
-	init_params.mTextColor		= RGB(0x20, 0x58, 0x67);
-	init_params.mBkgndColor2	= RGB(0xb7, 0xdd, 0xe8);
-	init_params.mBkgndColor3	= RGB(0x92, 0xcd, 0xdc);
-	init_params.mTextColor2		= RGB(0x31, 0x85, 0x9b);
-	comp_date_sp->Init(init_params);
-	mComponentMngr.Add(comp_date_sp);
-
-	init_params.mName			= _T("Time");
-	init_params.mHeight			= 100;
-	init_params.mBkgndColor		= RGB(0xc6, 0xd9, 0xf0);
-	init_params.mTextColor		= RGB(0x0f, 0x24, 0x3e);
-	init_params.mBkgndColor2	= RGB(0x8d, 0xb3, 0xe2);
-	init_params.mBkgndColor3	= RGB(0x54, 0x8d, 0xd4);
-	init_params.mTextColor2		= RGB(0x17, 0x36, 0x5d);
-	comp_time_sp->Init(init_params);
-	mComponentMngr.Add(comp_time_sp);
-
+	mComponentMngr.Load();
 	mComponentMngr.Create();
 
 	mWndUtils.SetWndPtr(this);
@@ -164,6 +171,25 @@ BOOL CBlueClockDlg::OnInitDialog()
 	mBackBuffer.Create(rc.Width(), rc.Height());
 
 	SetTimer(1, 100, NULL);
+
+
+#if 0
+	timeBeginPeriod(1);
+
+	vector<double> vt;
+    for (int i = 0; i < 10; i++)
+    {
+        int64_t start = bl_get_curr_usec();
+
+        Sleep(10);
+
+        double delta = (bl_get_curr_usec() - start) / 1000000.0;
+
+		vt.push_back(delta);
+    }
+
+	int a = 0;
+#endif
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

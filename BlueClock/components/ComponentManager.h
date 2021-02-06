@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 #include "Component.h"
+#include "Component_Date.h"
+#include "Component_Time.h"
 
 using namespace std;
 
@@ -16,6 +18,8 @@ public:
 
 public:
     int Add(shared_ptr<CComponent> componentSp);
+
+    int Load();
 
     int GetWidth() const;
     int GetHeight() const;

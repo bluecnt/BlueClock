@@ -3,6 +3,9 @@
 #include "pch.h"
 #include "Component.h"
 
+const CString    CComponent::DefaultFontName      = _T("πŸ≈¡√º");
+const CString    CComponent::DefaultFontName2     = _T("πŸ≈¡√º");
+
 CComponent::CComponent()
 {
     //
@@ -63,6 +66,11 @@ int CComponent::GetMargin() const
 {
     return DefaultMargin;
 }
+int CComponent::GetItemMargin() const
+{
+    return mInitParams.mItemMargin;
+}
+
 COLORREF CComponent::GetBkgndColor() const
 {
     return mInitParams.mBkgndColor;
@@ -84,6 +92,23 @@ COLORREF CComponent::GetTextColor2() const
     return mInitParams.mTextColor2;
 }
 
+CString CComponent::GetFontName() const
+{
+    return mInitParams.mFontName;
+}
+CString CComponent::GetFontName2() const
+{
+    return mInitParams.mFontName2;
+}
+int CComponent::GetFontSize() const
+{
+    return mInitParams.mFontSize;
+}
+int CComponent::GetFontSize2() const
+{
+    return mInitParams.mFontSize2;
+}
+
 CRect CComponent::GetViewRect(bool margin /*= false*/)
 {
     CRect rc = { 0, 0, GetWidth(), GetHeight() };
@@ -91,4 +116,26 @@ CRect CComponent::GetViewRect(bool margin /*= false*/)
         rc.DeflateRect(GetMargin(), GetMargin());
 
     return rc;
+}
+
+int CComponent::printf(LPCTSTR format, ...)
+{
+    TCHAR buf[1024] = { 0 };
+    TCHAR buf2[1024] = { 0 };
+    TCHAR time[32] = { 0 };
+    SYSTEMTIME st = { 0 };
+    va_list ap;
+
+    va_start(ap, format);
+    _vstprintf_s(buf, format, ap);
+    va_end(ap);
+
+    GetLocalTime(&st);
+    _stprintf_s(time, _T("%02d:%02d:%02d.%03d"),
+        st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+
+    _stprintf_s(buf2, _T("[%s] %s\n"), time, buf);
+    OutputDebugString(buf2);
+
+    return lstrlen(buf2);
 }

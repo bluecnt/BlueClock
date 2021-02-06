@@ -207,6 +207,31 @@ int CCanvas::DrawString(int x, int y, COLORREF color, LPCTSTR format, ...)
     return 0;
 }
 
+int CCanvas::DrawStringCenterMiddle(const CRect& rc, COLORREF color, LPCTSTR format, ...)
+{
+    if (!mDCPtr)
+        return -10;
+
+    TCHAR buf[1024] = { 0 };
+    va_list ap;
+
+    va_start(ap, format);
+    _vstprintf_s(buf, format, ap);
+    va_end(ap);
+
+    CDrawStringParams params;
+    //
+    params.mX           = rc.left;
+    params.mY           = rc.top;
+    params.mWidth       = rc.Width();
+    params.mHeight      = rc.Height();
+    params.mForeColor   = color;
+    //params.mBackColor;
+    params.mFormat      = DT_CENTER | DT_VCENTER | DT_SINGLELINE;
+    //
+    return DrawStringParams(params, buf);
+}
+
 int CCanvas::DrawCanvas(CCanvas* canvasPtr, int x /*= 0*/, int y /*= 0*/)
 {
     if (!mDCPtr)

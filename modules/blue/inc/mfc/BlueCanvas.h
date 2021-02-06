@@ -60,6 +60,7 @@ public:
     int SetFont(LPCTSTR name, int size);
     int DrawStringParams(const CDrawStringParams& params, LPCTSTR format, ...);
     int DrawString(int x, int y, COLORREF color, LPCTSTR format, ...);
+    int DrawStringCenterMiddle(const CRect& rc, COLORREF color, LPCTSTR format, ...);
 
     int DrawCanvas(CCanvas* canvasPtr, int x = 0, int y = 0);
 

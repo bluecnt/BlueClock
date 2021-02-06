@@ -33,19 +33,21 @@ void CComponent_Time::Update()
     return;
 #endif
 
-    const int ProgresssBarHeight = 14;
+//#define __WHITE_ITEM_BKGND
 
     SYSTEMTIME st = { 0 };
     GetLocalTime(&st);
 
 #if 1
     int day_of_week = st.wDayOfWeek;
-    int hour = st.wHour;
-    int minute = st.wMinute;
+    int hour        = st.wHour;
+    int minute      = st.wMinute;
+    int second      = st.wSecond;
 #else
-    int day_of_week = 4;
-    int hour = 6;
-    int minute = 15;
+    int day_of_week = 3;
+    int hour        = 12;
+    int minute      = 30;
+    int second      = 30;
 #endif
 
     CRect view_rc = GetViewRect();
@@ -56,62 +58,207 @@ void CComponent_Time::Update()
     GetCanvasPtr()->FillRect(&view_rc2, RGB(255, 255, 255));
 #endif
 
-    // Ω√∞£
+    int time_y          = GetMargin();
+    int time_b          = time_y + GetTextHeight();
 
-    GetCanvasPtr()->SetFont(_T("∏º¿∫ ∞ÌµÒ"), 24);
-    blue::mfc::CCanvas::CDrawStringParams ds_params;
-    ds_params.mForeColor = GetTextColor();
-    ds_params.mFormat = DT_CENTER | DT_VCENTER | DT_SINGLELINE;
-    ds_params.mY = GetMargin();
-    ds_params.mHeight = GetHeight(true) / 2;
+    int hour_prog_bar_y = time_b + GetItemMargin();
+    int hour_prog_bar_b = hour_prog_bar_y + GetProgressBarTextHeight() + GetProgressBarHeight();
+
+    int min_prog_bar_y  = hour_prog_bar_b + GetItemMargin();
+    int min_prog_bar_b  = min_prog_bar_y + GetProgressBarTextHeight() + GetProgressBarHeight();
+
+    //int min_prog_y      = 0;
+
+    CRect rc;
+
+    // Time
+
+    rc = view_rc2;
+    rc.top      = time_y;
+    rc.bottom   = time_b;
+#ifdef __WHITE_ITEM_BKGND
+    GetCanvasPtr()->FillRect(&rc, RGB(255,255,255));
+#endif
+
+    GetCanvasPtr()->SetFont(GetFontName(), GetFontSize());
 #if 1
-    GetCanvasPtr()->DrawStringParams(ds_params, _T("%02d:%02d:%02d"), hour, minute, st.wSecond);
+    GetCanvasPtr()->DrawStringCenterMiddle(&rc, GetTextColor(), _T("%02d:%02d:%02d"),
+        hour, minute, st.wSecond);
 #else
-    GetCanvasPtr()->DrawStringParams(ds_params, _T("%02d:%02d:%02d.%03d"),
+    GetCanvasPtr()->DrawStringCenterMiddle(&rc, GetTextColor(), _T("%02d:%02d:%02d.%03d"),
         hour, minute, st.wSecond, st.wMilliseconds);
 #endif
 
-    // «¡∑Œ±◊∑πΩ∫ πŸ
+    // Hour progress bar
 
-    CRect rc;
-    rc.left     = GetMargin();
-    rc.top      = GetMargin();
-    rc.right    = rc.left + (int)((hour + 1) * view_rc2.Width() / 24.0 + 0.5);
-    rc.bottom   = rc.top + ProgresssBarHeight;
-    rc.OffsetRect(0, view_rc2.Height() - ProgresssBarHeight);
-    GetCanvasPtr()->FillRect(&rc, GetBkgndColor2());
+    rc = view_rc2;
+    rc.top      = hour_prog_bar_y;
+    rc.bottom   = hour_prog_bar_b;
+#ifdef __WHITE_ITEM_BKGND
+    GetCanvasPtr()->FillRect(&rc, RGB(255,255,255));
+#else
+    {
+        CRect rc2 = rc;
+        rc2.top += GetProgressBarTextHeight();
+        GetCanvasPtr()->FillRect(&rc2, GetBkgndColor2());
+    }
+#endif
+
+    auto items = blue::mfc::CCanvas::CalcRects(rc.Width(), rc.Height(), 24, 1);
 
 #if 0
-    rc.left     = GetMargin() + (int)(hour * view_rc2.Width() / 24.0 + 0.5);
-    rc.right    = rc.left + (int)(minute * (view_rc2.Width() / 24.0) / 60.0 + 0.5);
+    int hours[] = { 0, 3, 6, 9, 12, 15, 18, 21 };
 #else
-    rc.left     = GetMargin();
-    rc.right    = rc.left + (int)(hour * view_rc2.Width() / 24.0 + 0.5) +
-                    (int)((minute+1) * (view_rc2.Width() / 24.0 + 0.5) / 60.0 + 0.5);
-#endif
-    //GetCanvasPtr()->FillRect(&rc, GetBkgndColor3());
-    rc.top += 4;
-    GetCanvasPtr()->FillRect(&rc, GetTextColor2());
-
-    rc.top -= 4;
     int hours[] = { 0, 2, 6, 9, 12, 18, 21 };
-    GetCanvasPtr()->SetFont(_T("πŸ≈¡√º"), 8);
-    for (int i = 0; i < 24; i++)
+#endif
+    int idx = 0;
+    GetCanvasPtr()->SetFont(GetFontName2(), GetFontSize2());
+    for (const auto& i : items)
     {
-        rc.left     = GetMargin() + (int)(i * view_rc2.Width() / 24.0 + 0.5);
-        rc.right    = rc.left + 1;
-        rc.bottom   = rc.top + 2;
-        
-        for (int j = 0; j < sizeof(hours) / sizeof(int); j++)
+        CRect rc2 = i;
+        rc2.OffsetRect(rc.left, rc.top);
+
+        bool hour_set = false;
+        for (auto j : hours)
         {
-            int v = hours[j];
-            if (i == v)
+            if (j == idx)
             {
-                GetCanvasPtr()->DrawString(rc.left, rc.top - ProgresssBarHeight, GetTextColor2(), _T("%02d"), i);
-                rc.bottom = rc.top + ProgresssBarHeight;
+                GetCanvasPtr()->DrawString(rc2.left, rc2.top, GetTextColor2(), _T("%02d"), j);
+                hour_set = true;
+
+                break;
             }
         }
 
-        GetCanvasPtr()->FillRect(&rc, GetTextColor2());
+        if (idx < hour)
+        {
+            CRect rc3 = rc2;
+            rc3.top += GetProgressBarTextHeight();
+            GetCanvasPtr()->FillRect(&rc3, GetBkgndColor3());
+        }
+
+        if (idx == hour)
+        {
+            CRect rc3 = rc2;
+            rc3.top     += GetProgressBarTextHeight();
+            rc3.right   = rc2.left + (int)((minute * (double)rc2.Width() / 60) + 0.5);
+            GetCanvasPtr()->FillRect(&rc3, GetBkgndColor3());
+        }
+
+        CRect rc3 = rc2;
+        rc3.top     += GetProgressBarTextHeight();
+        rc3.right   = rc3.left + 1;
+        if (!hour_set)
+            rc3.bottom  = rc3.top + 4;
+        GetCanvasPtr()->FrameRect(&rc3, GetTextColor2());
+
+        idx++;
     }
+
+    // Minute progress bar
+
+    rc = view_rc2;
+    rc.top      = min_prog_bar_y;
+    rc.bottom   = min_prog_bar_b;
+#ifdef __WHITE_ITEM_BKGND
+    GetCanvasPtr()->FillRect(&rc, RGB(255,255,255));
+#else
+    {
+        CRect rc2 = rc;
+        rc2.top += GetProgressBarTextHeight();
+        GetCanvasPtr()->FillRect(&rc2, GetBkgndColor2());
+    }
+#endif
+
+    items = blue::mfc::CCanvas::CalcRects(rc.Width(), rc.Height(), 60, 1);
+
+#if 1
+    int minutes[] = { 0, 15, 30, 45 };
+#else
+int minutes[] = { 0, 10, 20, 30, 40, 50 };
+#endif
+    idx = 0;
+    GetCanvasPtr()->SetFont(GetFontName2(), GetFontSize2());
+    for (const auto& i : items)
+    {
+        CRect rc2 = i;
+        rc2.OffsetRect(rc.left, rc.top);
+
+        bool min_set = false;
+        for (auto j : minutes)
+        {
+            if (j == idx)
+            {
+                GetCanvasPtr()->DrawString(rc2.left, rc2.top, GetTextColor2(), _T("%02d"), j);
+                min_set = true;
+
+                break;
+            }
+        }
+
+        if (idx < minute)
+        {
+            CRect rc3 = rc2;
+            rc3.top += GetProgressBarTextHeight();
+            GetCanvasPtr()->FillRect(&rc3, GetBkgndColor3());
+        }
+
+        if (idx == minute)
+        {
+            CRect rc3 = rc2;
+            rc3.top     += GetProgressBarTextHeight();
+            rc3.right   = rc2.left + (int)((second * ((double)rc2.Width()) / 60) + 0.5);
+            GetCanvasPtr()->FillRect(&rc3, GetBkgndColor3());
+        }
+
+        CRect rc3 = rc2;
+        rc3.top     += GetProgressBarTextHeight();
+        rc3.right   = rc3.left + 1;
+        if (!min_set)
+            rc3.bottom  = rc3.top + 4;
+        GetCanvasPtr()->FrameRect(&rc3, GetTextColor2());
+
+        idx++;
+    }
+}
+
+int CComponent_Time::GetWidth(bool margin) const
+{
+    return CComponent::GetWidth(margin);
+}
+int CComponent_Time::GetHeight(bool margin) const
+{
+    int h =
+        (!margin ? GetMargin() : 0) +
+        // Time
+        GetTextHeight() +
+        //
+        GetItemMargin() +
+        // Hour progress bar
+        GetProgressBarTextHeight() +
+        GetProgressBarHeight() +
+        //
+        GetItemMargin() +
+        // Minute progress bar
+        GetProgressBarTextHeight() +
+        GetProgressBarHeight() +
+        //
+        (!margin ? GetMargin() : 0);
+    //
+    return h;
+}
+
+int CComponent_Time::GetTextHeight() const
+{
+    int h = (int)(GetFontSize() * 2.0 + 0.5);
+    //
+    return h;
+}
+int CComponent_Time::GetProgressBarTextHeight() const
+{
+    return 14;
+}
+int CComponent_Time::GetProgressBarHeight() const
+{
+    return 14;
 }

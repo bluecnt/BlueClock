@@ -72,9 +72,6 @@
     <ClInclude Include="components\Component_Time.h">
       <Filter>components</Filter>
     </ClInclude>
-    <ClInclude Include="components\Component_Title.h">
-      <Filter>components</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlueClock.cpp">
@@ -102,9 +99,6 @@
       <Filter>components</Filter>
     </ClCompile>
     <ClCompile Include="components\Component_Time.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
-    <ClCompile Include="components\Component_Title.cpp">
       <Filter>components</Filter>
     </ClCompile>
   </ItemGroup>

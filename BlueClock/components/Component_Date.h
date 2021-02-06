@@ -12,4 +12,11 @@ public:
     virtual int Create() override;
     virtual void Destroy() override;
     virtual void Update() override;
+
+    virtual int GetWidth(bool margin = false) const override;
+    virtual int GetHeight(bool margin = false) const override;
+
+private:
+    int GetTextHeight() const;
+    int GetProgressBarHeight() const;
 };

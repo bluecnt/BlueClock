@@ -19,6 +19,60 @@ int CComponentManager::Add(shared_ptr<CComponent> componentSp)
     return 0;
 }
 
+int CComponentManager::Load()
+{
+    CComponent::CInitParams init_params;
+
+    auto comp_date_sp = make_shared<CComponent_Date>();
+    //
+    init_params.mName           =_T("Date");
+    //
+    init_params.mWidth          = comp_date_sp->GetWidth();
+    init_params.mHeight         = comp_date_sp->GetHeight();
+    init_params.mMargin         = CComponent::DefaultMargin;
+    init_params.mItemMargin     = CComponent::DefaultItemMargin;
+    //
+    init_params.mBkgndColor     = RGB(0xde, 0xeb, 0xf6);
+    init_params.mTextColor      = RGB(0x1e, 0x4e, 0x79);
+    init_params.mBkgndColor2    = RGB(0xbd, 0xd7, 0xee);
+    init_params.mBkgndColor3    = RGB(0x9c, 0xc3, 0xe5);
+    init_params.mTextColor2     = RGB(0x2e, 0x75, 0xb5);
+    //
+    init_params.mFontName       = CComponent::DefaultFontName;
+    init_params.mFontName2      = CComponent::DefaultFontName2;
+    init_params.mFontSize       = CComponent::DefaultFontSize;
+    init_params.mFontSize2      = CComponent::DefaultFontSize2;
+    //
+    comp_date_sp->Init(init_params);
+
+    auto comp_time_sp = make_shared<CComponent_Time>();
+    //
+    init_params.mName           = _T("Time");
+    //
+    init_params.mWidth          = comp_date_sp->GetWidth();
+    init_params.mHeight         = comp_date_sp->GetHeight();
+    init_params.mMargin         = CComponent::DefaultMargin;
+    init_params.mItemMargin     = CComponent::DefaultItemMargin;
+    //
+    init_params.mBkgndColor     = RGB(0xc6, 0xd9, 0xf0);
+    init_params.mTextColor      = RGB(0x0f, 0x24, 0x3e);
+    init_params.mBkgndColor2    = RGB(0x8d, 0xb3, 0xe2);
+    init_params.mBkgndColor3    = RGB(0x54, 0x8d, 0xd4);
+    init_params.mTextColor2     = RGB(0x17, 0x36, 0x5d);
+    //
+    init_params.mFontName       = CComponent::DefaultFontName;
+    init_params.mFontName2      = CComponent::DefaultFontName2;
+    init_params.mFontSize       = 24; //CComponent::DefaultFontSize;
+    init_params.mFontSize2      = CComponent::DefaultFontSize2;
+    //
+    comp_time_sp->Init(init_params);
+
+    Add(comp_date_sp);
+    Add(comp_time_sp);
+
+    return 0;
+}
+
 int CComponentManager::GetWidth() const
 {
     int max_w = 0;
@@ -39,9 +93,15 @@ int CComponentManager::GetHeight() const
     return sum_h + 1 * 2;
 }
 
-
 int CComponentManager::Create()
 {
+    if ((int)mVector.size() == 0)
+    {
+        bl_printf(_T("There is no component to create! <ERROR>"));
+
+        return -10;
+    }
+
     for (const auto& i : mVector)
     {
         int ret = i->Create();
