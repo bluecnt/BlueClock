@@ -13,6 +13,9 @@ using namespace std;
 class CComponentManager
 {
 public:
+    static const int                    BorderSize  = 1;
+
+public:
     CComponentManager();
     virtual ~CComponentManager();
 
@@ -20,6 +23,8 @@ public:
     int Add(shared_ptr<CComponent> componentSp);
 
     int Load();
+
+    int SetScale(double value);
 
     int GetWidth() const;
     int GetHeight() const;
@@ -31,4 +36,5 @@ public:
 
 private:
     vector<shared_ptr<CComponent>>      mVector;
+    double                              mScale  = 1.0;
 };

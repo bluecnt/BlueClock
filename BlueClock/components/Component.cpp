@@ -51,6 +51,14 @@ void CComponent::Update()
     mCanvas.DrawString(BL_MFC_CANVAS_CENTER, BL_MFC_CANVAS_MIDDLE, GetTextColor(), GetName());
 }
 
+int CComponent::SetScale(double scale)
+{
+    mScale = scale;
+
+    // [SGLEE:20210206SAT_235700] 무조건 0 리턴이 답인가?
+    return 0;
+}
+
 blue::mfc::CCanvas* CComponent::GetCanvasPtr()
 {
     return &mCanvas;
@@ -61,11 +69,17 @@ CString CComponent::GetName() const
 }
 int CComponent::GetWidth(bool margin /*= false*/) const
 {
-    return margin ? mInitParams.mWidth - GetMargin() : mInitParams.mWidth;
+    int ret = margin ? mInitParams.mWidth - GetMargin() : mInitParams.mWidth;
+    //ret = (int)(ret * mScale + 0.5);
+    //
+    return ret;
 }
 int CComponent::GetHeight(bool margin /*= false*/) const
 {
-    return margin ? mInitParams.mHeight - GetMargin() : mInitParams.mHeight;
+    int ret = margin ? mInitParams.mHeight - GetMargin() : mInitParams.mHeight;
+    //ret = (int)(ret * mScale + 0.5);
+    //
+    return ret;
 }
 int CComponent::GetMargin() const
 {
@@ -121,6 +135,11 @@ CRect CComponent::GetViewRect(bool margin /*= false*/)
         rc.DeflateRect(GetMargin(), GetMargin());
 
     return rc;
+}
+
+double CComponent::GetScale() const
+{
+    return mScale;
 }
 
 int CComponent::printf(LPCTSTR format, ...)

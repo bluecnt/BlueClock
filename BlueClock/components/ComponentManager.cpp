@@ -73,24 +73,36 @@ int CComponentManager::Load()
     return 0;
 }
 
+int CComponentManager::SetScale(double value)
+{
+    for (const auto& i : mVector)
+        i->SetScale(value);
+
+    return 0;
+}
+
 int CComponentManager::GetWidth() const
 {
     int max_w = 0;
     for (const auto& i : mVector)
     {
-        if (i->GetWidth() > max_w)
-            max_w = i->GetWidth();
+        int w = (int)(i->GetWidth() * i->GetScale() + 0.5);
+        if (w > max_w)
+            max_w = w;
     }
 
-    return max_w + 1 * 2;
+    return max_w + (BorderSize * 2);
 }
 int CComponentManager::GetHeight() const
 {
     int sum_h = 0;
     for (const auto& i : mVector)
-        sum_h += i->GetHeight();
+    {
+        int h = (int)(i->GetHeight() * i->GetScale() + 0.5);
+        sum_h += h;
+    }
 
-    return sum_h + 1 * 2;
+    return sum_h + (BorderSize * 2);
 }
 
 int CComponentManager::Create()

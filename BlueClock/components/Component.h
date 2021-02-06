@@ -53,6 +53,8 @@ public:
     virtual int Create();
     virtual void Destroy();
     virtual void Update();
+
+    int SetScale(double scale);
     
     blue::mfc::CCanvas* GetCanvasPtr();
     CInitParams GetCreateParams() const;
@@ -77,10 +79,18 @@ public:
 
     CRect GetViewRect(bool margin = false);
 
+    double GetScale() const;
+
 public:
     static int printf(LPCTSTR format, ...);
 
 private:
     blue::mfc::CCanvas      mCanvas;
     CInitParams             mInitParams;
+
+#if 1
+    double                  mScale  = 1.0;
+#else
+    double                  mScale  = 2.0;
+#endif
 };

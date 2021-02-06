@@ -299,7 +299,7 @@ void CBlueClockDlg::OnClose()
 
 	CString s = _T("Exit?");
 
-	int ret = AfxMessageBox(s, MB_ICONQUESTION | MB_YESNO);
+	int ret = AfxMessageBox(s, MB_ICONQUESTION | MB_YESNO | MB_DEFBUTTON2);
 	if (ret == IDYES)
 	{
 		CDialogEx::OnClose();
@@ -328,6 +328,27 @@ void CBlueClockDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		case VK_NUMPAD1: mWndUtils.Move(BL_MFC_WND_SIDE_LEFT_BOTTOM); break;
 		case VK_NUMPAD2: mWndUtils.Move(BL_MFC_WND_SIDE_CENTER_BOTTOM); break;
 		case VK_NUMPAD3: mWndUtils.Move(BL_MFC_WND_SIDE_RIGHT_BOTTOM); break;
+
+			// [SGLEE:20210206SAT_234200] never you can catch this key here!
+		case VK_ESCAPE:
+			DebugBreak();
+
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		{
+			double scale = (double)(nChar- '1' + 1);
+
+#if 0
+			CString s;
+			s.Format(_T("%f"), scale);
+			AfxMessageBox(s);
+#endif
+
+			mComponentMngr.SetScale(scale);
+			break;
+		}
 	}
 }
 
