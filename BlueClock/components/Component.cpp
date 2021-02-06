@@ -3,8 +3,13 @@
 #include "pch.h"
 #include "Component.h"
 
-const CString    CComponent::DefaultFontName      = _T("πŸ≈¡√º");
-const CString    CComponent::DefaultFontName2     = _T("πŸ≈¡√º");
+#if 1
+    const CString    CComponent::DefaultFontName      = _T("πŸ≈¡√º");
+    const CString    CComponent::DefaultFontName2     = _T("πŸ≈¡√º");
+#else
+const CString    CComponent::DefaultFontName      = _T("∏º¿∫ ∞ÌµÒ");
+const CString    CComponent::DefaultFontName2     = _T("∏º¿∫ ∞ÌµÒ");
+#endif
 
 CComponent::CComponent()
 {

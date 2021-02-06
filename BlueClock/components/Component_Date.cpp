@@ -33,7 +33,7 @@ void CComponent_Date::Update()
     return;
 #endif
 
-//#define __WHITE_ITEM_BKGND
+#define __WHITE_ITEM_BKGND
 
     LPCTSTR WeekNames[] =
     {
@@ -47,7 +47,7 @@ void CComponent_Date::Update()
     SYSTEMTIME st = { 0 };
     GetLocalTime(&st);
 
-#if 0
+#if 1
     int day_of_week = st.wDayOfWeek;
     int hour = st.wHour;
 #else

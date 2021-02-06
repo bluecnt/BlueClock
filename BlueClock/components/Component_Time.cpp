@@ -33,7 +33,7 @@ void CComponent_Time::Update()
     return;
 #endif
 
-//#define __WHITE_ITEM_BKGND
+#define __WHITE_ITEM_BKGND
 
     SYSTEMTIME st = { 0 };
     GetLocalTime(&st);
@@ -45,9 +45,9 @@ void CComponent_Time::Update()
     int second      = st.wSecond;
 #else
     int day_of_week = 3;
-    int hour        = 12;
-    int minute      = 30;
-    int second      = 30;
+    int hour        = 23;
+    int minute      = 59;
+    int second      = 59;
 #endif
 
     CRect view_rc = GetViewRect();
@@ -67,6 +67,9 @@ void CComponent_Time::Update()
     int min_prog_bar_y  = hour_prog_bar_b + GetItemMargin();
     int min_prog_bar_b  = min_prog_bar_y + GetProgressBarTextHeight() + GetProgressBarHeight();
 
+    int sec_prog_bar_y  = min_prog_bar_b + GetItemMargin();
+    int sec_prog_bar_b  = sec_prog_bar_y + GetProgressBarTextHeight() + GetProgressBarHeight();
+
     //int min_prog_y      = 0;
 
     CRect rc;
@@ -81,13 +84,15 @@ void CComponent_Time::Update()
 #endif
 
     GetCanvasPtr()->SetFont(GetFontName(), GetFontSize());
-#if 1
+#if 0
     GetCanvasPtr()->DrawStringCenterMiddle(&rc, GetTextColor(), _T("%02d:%02d:%02d"),
         hour, minute, st.wSecond);
 #else
     GetCanvasPtr()->DrawStringCenterMiddle(&rc, GetTextColor(), _T("%02d:%02d:%02d.%03d"),
-        hour, minute, st.wSecond, st.wMilliseconds);
+        hour, minute, second, st.wMilliseconds);
 #endif
+
+    // [SGLEE:20210206SAT_211500] Progrss Bar 드로잉 코드 lambda 함수로 만들 것!!
 
     // Hour progress bar
 
@@ -220,6 +225,64 @@ int minutes[] = { 0, 10, 20, 30, 40, 50 };
 
         idx++;
     }
+
+    // Second progress bar
+
+    rc = view_rc2;
+    rc.top      = sec_prog_bar_y;
+    rc.bottom   = sec_prog_bar_b;
+#ifdef __WHITE_ITEM_BKGND
+    GetCanvasPtr()->FillRect(&rc, RGB(255,255,255));
+#else
+    {
+        CRect rc2 = rc;
+        rc2.top += GetProgressBarTextHeight();
+        GetCanvasPtr()->FillRect(&rc2, GetBkgndColor2());
+    }
+#endif
+
+    items = blue::mfc::CCanvas::CalcRects(rc.Width(), rc.Height(), 60, 1);
+
+#if 0
+    int seconds[] = { 0, 15, 30, 45 };
+#else
+    int seconds[] = { 0, 10, 20, 30, 40, 50 };
+#endif
+    idx = 0;
+    GetCanvasPtr()->SetFont(GetFontName2(), GetFontSize2());
+    for (const auto& i : items)
+    {
+        CRect rc2 = i;
+        rc2.OffsetRect(rc.left, rc.top);
+
+        bool sec_set = false;
+        for (auto j : seconds)
+        {
+            if (j == idx)
+            {
+                GetCanvasPtr()->DrawString(rc2.left, rc2.top, GetTextColor2(), _T("%02d"), j);
+                sec_set = true;
+
+                break;
+            }
+        }
+
+        if (idx < second)
+        {
+            CRect rc3 = rc2;
+            rc3.top += GetProgressBarTextHeight();
+            GetCanvasPtr()->FillRect(&rc3, GetBkgndColor3());
+        }
+
+        CRect rc3 = rc2;
+        rc3.top     += GetProgressBarTextHeight();
+        rc3.right   = rc3.left + 1;
+        if (!sec_set)
+            rc3.bottom  = rc3.top + 4;
+        GetCanvasPtr()->FrameRect(&rc3, GetTextColor2());
+
+        idx++;
+    }
 }
 
 int CComponent_Time::GetWidth(bool margin) const
@@ -232,16 +295,12 @@ int CComponent_Time::GetHeight(bool margin) const
         (!margin ? GetMargin() : 0) +
         // Time
         GetTextHeight() +
-        //
-        GetItemMargin() +
-        // Hour progress bar
-        GetProgressBarTextHeight() +
-        GetProgressBarHeight() +
-        //
-        GetItemMargin() +
-        // Minute progress bar
-        GetProgressBarTextHeight() +
-        GetProgressBarHeight() +
+        // Hour, Minute, Second progress bar
+        (
+            GetItemMargin() +
+            GetProgressBarTextHeight() +
+            GetProgressBarHeight()
+        ) * 3 +
         //
         (!margin ? GetMargin() : 0);
     //

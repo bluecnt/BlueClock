@@ -16,8 +16,8 @@ public:
     static const int        DefaultMargin       = 10;
     static const int        DefaultItemMargin   = 4;
     //
-    static const CString    DefaultFontName;    // πŸ≈¡√º
-    static const CString    DefaultFontName2;   // πŸ≈¡√º
+    static const CString    DefaultFontName;
+    static const CString    DefaultFontName2;
     static const int        DefaultFontSize     = 18;
     static const int        DefaultFontSize2    = 8;
 

@@ -273,7 +273,7 @@ vector<CRect> CCanvas::CalcRects(int width, int height, int cols, int rows)
             CRect rc;
             int x = i * cell_w + delta_x;
             int y = j * cell_h + delta_y;
-            int r = x + cell_w + (mod_w > 0 ? 1 : 0);            
+            int r = x + cell_w + (mod_w > 0 ? 1 : 0);
             int b = y + cell_h + (mod_h > 0 ? 1 : 0);
             rc.SetRect(x, y, r, b);
             vt.push_back(rc);
